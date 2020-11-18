@@ -14,6 +14,12 @@ i=$(( $i + 1 ))	##basic incrementation
   word="$line"
   for((j=0; j<${#word}; j++))	## #word is total number of letters in the line
 	do
+	
+	if test $i -ne 1
+	then
+	tempString+=$'\n'
+	fi
+	
 	    letter=${word:j:1}	## takes words one by one
 #	    echo -e "$letter j=$j"
 	    ascii=$(printf '%d' "'$letter") 	#assigns it to 
@@ -40,7 +46,6 @@ i=$(( $i + 1 ))	##basic incrementation
 	    fi
 	    
 	done
-	tempString+=$'\n'
 done < "$input"
 #echo "$i lines at total"
 echo "$tempString" > $1	## finally we change the file content by our new string
