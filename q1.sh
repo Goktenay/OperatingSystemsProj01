@@ -44,13 +44,13 @@ done
 echo ""
 }
 
-print_dots $n0
-print_dots $n1
-print_dots $n2
-print_dots $n3
-print_dots $n4
-print_dots $n5
-print_dots $n6
-print_dots $n7
-print_dots $n8
-print_dots $n9
+echo -n "0 "; print_dots $n0
+echo -n "1 "; print_dots $n1
+echo -n "2 "; print_dots $n2
+echo -n "3 "; print_dots $n3
+echo -n "4 "; print_dots $n4
+echo -n "5 "; print_dots $n5
+echo -n "6 "; print_dots $n6
+echo -n "7 "; print_dots $n7
+echo -n "8 "; print_dots $n8
+echo -n "9 "; print_dots $n9
