@@ -25,7 +25,7 @@ fi
 ## c.txt
 recursiveFiles= $(ls c*)
 ##
-recursive
+recursive= "" 	## dirleri içerecek sadece
 
 while IFS= read -r line	##reads until file ends
 do
@@ -37,6 +37,7 @@ do
 		if test letter=":"
 		then 
 			./q5 -R $letters
+			recursive+="$letter"
 			break;
 		fi
 
