@@ -19,11 +19,38 @@ then
 fi
 
 
-
+##we gonna take the recursive files, output will be such as
+## cla
+## caalfsa
+## c.txt
 recursiveFiles= $(ls c*)
-./q5 -R 
+##
+recursive
+
+while IFS= read -r line	##reads until file ends
+do
+	letters="$line"
+
+	for ((i=0;i<{#letters};i++))
+	do
+		letter={letters:i:1}
+		if test letter=":"
+		then 
+			./q5 -R $letters
+			break;
+		fi
+
+	done 
+ 
+done < "$recursiveFiles"
 
 
+
+
+
+### copyayalcaks
+## cp c.txt copied
+## !!!recursively!!!
 
 
 directorySize=$(echo -n $directoryInfo | wc -m) ## Directory size
