@@ -1,84 +1,72 @@
 clear
+#!/bin/bash
 
+cpy() 
+{
+	## is there a copy folder already?
+	if test ! -d "./copyfolder"
+	then
+		fileDescriptor=$2 ## file description
+		isRecursive=$3 ## if its recursive then 1 else 0
+		
+		## test if it's recursive
+		if test "$isRecursive" -eq 1
+		then
+			directories=$(ls -d */ 2>/dev/null)
+		fi
+		
+		## Files to copy list
+		filesToCopy=$( (ls -p $fileDescriptor ) | grep -v /)
 
-firstArg=$1 #  Extra path argument
-recursive=0
-
-if test $firstArg = "-R" && test $firstArg = "-r"
-then
-	firstArg=$2
-	recursive=1
-fi
-
-oldestFile=""
-directoryInfo=""
-
-if test -z "$firstArg" ## Is first argurment null?
-then
-	echo "directiory cannot be null"
-fi
-
-
-##we gonna take the recursive files, output will be such as
-## cla
-## caalfsa
-## c.txt
-recursiveFiles= $(ls c*)
-##
-recursive= "" 	## dirleri içerecek sadece
-
-while IFS= read -r line	##reads until file ends
-do
-	letters="$line"
-
-	for ((i=0;i<{#letters};i++))
-	do
-		letter={letters:i:1}
-		if test letter=":"
-		then 
-			./q5 -R $letters
-			recursive+="$letter"
-			break;
+	
+		## if there are no files to copy
+		if test ! -z "$filesToCopy"
+		then
+			mkdir copyfolder
+			while IFS= read -r line	
+			do
+			cp "$line" copyfolder ## copy to folder
+			done <<<"$filesToCopy"
 		fi
 
-	done 
- 
-done < "$recursiveFiles"
+		
+		## if it's recursive
+		if test "$isRecursive" -eq 1
+		then
+			if test ! -z "$directories"
+			then
+				while IFS= read -r line
+				do
+				cd "$1/$line" ## change directory
+				cpy "$(pwd)" "$fileDescriptor" "$isRecursive" ## aply recursive call
+				cd .. ## pop back to previous directory
+				done <<<"$directories"
+			fi
+		fi
+	else
+		echo "We already copied the content"
+	fi
+	
+}
 
+firstArg=$1
+secondArg=$2
 
-
-
-
-### copyayalcaks
-## cp c.txt copied
-## !!!recursively!!!
-
-
-directorySize=$(echo -n $directoryInfo | wc -m) ## Directory size
-trimSize=$(expr $directorySize - 1) ## We will use this information in order the trim the path data
-
-oldestFile=$(find "$directoryInfo" -maxdepth 1 -type f -printf '%T+ %p\n' | sort | head -n 1) ## We simply search for the oldest file in the relative directory
-
-fileName=$(echo $oldestFile | awk '{print $NF}') ## Get the meta file name (It still has relative path information) information from oldest file
-
-fileName="${fileName:(2 + $trimSize)}" ## Trim the meta file name so we got pure file name.
-
-fileDirectory="${directoryInfo}/${fileName}" ## This is our relative path information, we will use it to delete the hile.
-
-echo "Do you want to delete $fileName ? (Y/N)"
-read -r userDecision
-
-if test "$userDecision" == 'Y' -o "$userDecision" == 'y' ## Check the user input
+if test "$firstArg" = "-R" -o "$firstArg" = "-r" ## if our first arg is an option
 then
-	echo "1 file Deleted"
-	rm $fileDirectory ## Delete the file
-elif test "$userDecision" == 'n' -o "$userDecision" == 'N' 
-then
-	echo "Nothing is deleted"
+	if test -z "$secondArg"
+	then
+		echo "file name descriptor is missing"
+	else
+		cpy "$(pwd)" "$secondArg" 1
+	fi
 else
-	echo "Invalid input"
+	if test -z "$firstArg" 
+	then
+		echo "incorrect number of arguments"
+	else
+		cpy "$(pwd)" "$firstArg" 0 
+	fi
 fi
-
-
 
 
